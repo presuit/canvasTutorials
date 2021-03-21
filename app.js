@@ -221,6 +221,157 @@ class HomeButton {
   }
 }
 
+class CommingSoonButton {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
+    this.squareWidth = this.width;
+    this.squareHeight = this.height;
+
+    this.centerX = this.x + 0.5 * this.width;
+    this.centerY = this.y + 0.5 * this.height;
+
+    this.firstSquare = {
+      x: this.centerX - this.squareWidth / 2,
+      y: this.centerY - this.squareHeight / 2,
+    };
+
+    this.secondSquare = {
+      x: this.firstSquare.x - 8,
+      y: this.firstSquare.y - 8,
+    };
+
+    this.playBtn = [
+      {
+        x: this.firstSquare.x + 0.4 * this.squareWidth,
+        y: this.firstSquare.y + this.squareHeight * 0.2,
+      },
+      {
+        x: this.firstSquare.x + 0.4 * this.squareWidth + 10,
+        y: this.firstSquare.y + this.squareHeight * 0.5,
+      },
+      {
+        x: this.firstSquare.x + 0.4 * this.squareWidth,
+        y: this.firstSquare.y + this.squareHeight * 0.8,
+      },
+    ];
+  }
+  draw(ctx) {
+    ctx.strokeStyle = "white";
+    ctx.fillStyle = "black";
+
+    ctx.strokeRect(
+      this.secondSquare.x,
+      this.secondSquare.y,
+      this.squareWidth,
+      this.squareHeight
+    );
+
+    ctx.fillRect(
+      this.firstSquare.x,
+      this.firstSquare.y,
+      this.squareWidth,
+      this.squareHeight
+    );
+
+    ctx.strokeRect(
+      this.firstSquare.x,
+      this.firstSquare.y,
+      this.squareWidth,
+      this.squareHeight
+    );
+
+    ctx.beginPath();
+    ctx.moveTo(this.playBtn[0].x, this.playBtn[0].y);
+    for (const point of this.playBtn) {
+      ctx.lineTo(point.x, point.y);
+    }
+    ctx.lineTo(this.playBtn[0].x, this.playBtn[0].y);
+    ctx.stroke();
+    ctx.closePath();
+  }
+}
+
+class SearchButton {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
+    this.centerX = this.x + this.width * 0.5;
+    this.centerY = this.y + this.height * 0.5;
+  }
+
+  draw(ctx) {
+    ctx.strokeStyle = "white";
+    ctx.beginPath();
+    ctx.moveTo(this.x + this.width, this.y + this.height);
+    ctx.lineTo(this.centerX, this.centerY);
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.arc(this.centerX, this.centerY, this.width * 0.4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.arc(this.centerX, this.centerY, this.width * 0.4, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.closePath();
+  }
+}
+
+class DownloadsButton {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
+    this.centerX = this.x + this.width * 0.5;
+    this.centerY = this.y + this.height * 0.5;
+
+    this.bar = [
+      { x: this.x, y: this.y + this.height * 0.9 },
+      { x: this.x + this.width, y: this.y + this.height * 0.9 },
+    ];
+
+    this.arrow = [
+      { x: this.centerX, y: this.y },
+      { x: this.centerX, y: this.y + this.height * 0.8 },
+      { x: this.centerX - 15, y: this.y + this.height * 0.5 },
+      { x: this.centerX, y: this.y + this.height * 0.8 },
+      { x: this.centerX + 15, y: this.y + this.height * 0.5 },
+    ];
+  }
+
+  draw(ctx) {
+    ctx.strokeStyle = "white";
+    ctx.beginPath();
+    ctx.moveTo(this.bar[0].x, this.bar[0].y);
+    for (const item of this.bar) {
+      ctx.lineTo(item.x, item.y);
+    }
+    ctx.lineTo(this.bar[0].x, this.bar[0].y);
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.moveTo(this.arrow[0].x, this.arrow[0].y);
+    for (const item of this.arrow) {
+      ctx.lineTo(item.x, item.y);
+    }
+    ctx.stroke();
+    ctx.closePath();
+  }
+}
+
 class BottomNavigation {
   constructor(x, y, width, height) {
     this.x = x;
@@ -228,20 +379,55 @@ class BottomNavigation {
     this.width = width;
     this.height = height;
 
-    this.homeButton = new HomeButton(this.x + 20, this.y + 10, 30, 30);
+    this.homeButton = new HomeButton(this.x + 30, this.y + 10, 30, 30);
+    this.commingSoonButton = new CommingSoonButton(
+      this.homeButton.x + this.homeButton.width + 100,
+      this.homeButton.y + 10,
+      25,
+      25
+    );
+    this.searchButton = new SearchButton(
+      this.commingSoonButton.x + this.commingSoonButton.width + 100,
+      this.homeButton.y,
+      30,
+      30
+    );
+
+    this.downloadsButton = new DownloadsButton(
+      this.searchButton.x + this.searchButton.width + 100,
+      this.homeButton.y + 8,
+      30,
+      30
+    );
   }
 
   draw(ctx) {
-    ctx.fillStyle = "firebrick";
+    ctx.fillStyle = "black";
     ctx.fillRect(this.x, this.y, this.width, this.height);
     this.homeButton.draw(ctx);
     ctx.fillStyle = "white";
-    changeFontSize(ctx, 15);
+    changeFontSize(ctx, 12);
 
+    ctx.fillText("Home", this.homeButton.x, this.y + this.height * 0.9);
+
+    this.commingSoonButton.draw(ctx);
+    ctx.fillStyle = "white";
     ctx.fillText(
-      "Home",
-      this.homeButton.x - 5,
-      this.homeButton.y + this.homeButton.height + 20
+      "Comming Soon",
+      this.commingSoonButton.x - 30,
+      this.y + this.height * 0.9
+    );
+
+    this.searchButton.draw(ctx);
+    ctx.fillStyle = "white";
+    ctx.fillText("Search", this.searchButton.x, this.y + this.height * 0.9);
+
+    this.downloadsButton.draw(ctx);
+    ctx.fillStyle = "white";
+    ctx.fillText(
+      "Downloads",
+      this.downloadsButton.x - 10,
+      this.y + this.height * 0.9
     );
   }
 }
