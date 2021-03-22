@@ -379,7 +379,7 @@ class BottomNavigation {
     this.width = width;
     this.height = height;
 
-    this.homeButton = new HomeButton(this.x + 30, this.y + 10, 30, 30);
+    this.homeButton = new HomeButton(this.x + 30, this.y + 30, 30, 30);
     this.commingSoonButton = new CommingSoonButton(
       this.homeButton.x + this.homeButton.width + 100,
       this.homeButton.y + 10,
@@ -429,6 +429,58 @@ class BottomNavigation {
       this.downloadsButton.x - 10,
       this.y + this.height * 0.9
     );
+  }
+}
+
+class NetflixMovie {
+  constructor(x, y, width, height, imgSrc) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.imgSrc = imgSrc;
+  }
+
+  draw(ctx) {
+    const img = new Image();
+    img.src = `./assets/${this.imgSrc}.PNG`;
+
+    img.onload = () => {
+      ctx.drawImage(img, this.x, this.y, this.width, this.height);
+    };
+  }
+}
+
+class NetflixMovieContainer {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
+    this.movieWidth = this.width / 4;
+    this.movieHeight = this.height;
+
+    this.totalMovies = 4;
+
+    this.movies = [];
+    for (let i = 0; i < this.totalMovies; i++) {
+      this.movies.push(
+        new NetflixMovie(
+          this.x + this.movieWidth * i + 20 * i + 10,
+          this.y,
+          this.movieWidth,
+          this.movieHeight,
+          `movie_${i + 1}`
+        )
+      );
+    }
+  }
+
+  draw(ctx) {
+    for (const item of this.movies) {
+      item.draw(ctx);
+    }
   }
 }
 
@@ -523,6 +575,138 @@ class NetflixHeader {
   }
 }
 
+class PlusButton {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
+    this.centerX = this.x + this.width * 0.5;
+    this.centerY = this.y + this.height * 0.5;
+
+    this.points = [];
+    this.points.push({ x: this.centerX, y: this.y });
+    this.points.push({ x: this.centerX, y: this.y + this.height });
+    this.points.push({ x: this.x, y: this.centerY });
+    this.points.push({ x: this.x + this.width, y: this.centerY });
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.moveTo(this.points[0].x, this.points[0].y);
+    ctx.lineTo(this.points[1].x, this.points[1].y);
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.moveTo(this.points[2].x, this.points[2].y);
+    ctx.lineTo(this.points[3].x, this.points[3].y);
+    ctx.stroke();
+    ctx.closePath();
+  }
+}
+
+class PlayButton {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
+    this.centerX = this.x + this.width * 0.5;
+    this.centerY = this.y + this.height * 0.5;
+
+    this.triangle = [];
+
+    this.triangle.push({
+      x: this.x + this.width * 0.2,
+      y: this.y + this.height * 0.2,
+    });
+    this.triangle.push({
+      x: this.x + this.width * 0.35,
+      y: this.y + this.height * 0.5,
+    });
+    this.triangle.push({
+      x: this.x + this.width * 0.2,
+      y: this.y + this.height * 0.8,
+    });
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = "white";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.moveTo(this.triangle[0].x, this.triangle[0].y);
+    for (const item of this.triangle) {
+      ctx.lineTo(item.x, item.y);
+    }
+    ctx.lineTo(this.triangle[0].x, this.triangle[0].y);
+    ctx.fill();
+    ctx.closePath();
+
+    ctx.font = "bold 18px sans-serif";
+    ctx.fillText("Play", this.triangle[1].x + 10, this.triangle[1].y + 5);
+  }
+}
+
+class InfoButton {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
+    this.centerX = this.x + this.width * 0.5;
+    this.centerY = this.y + this.height * 0.5;
+  }
+
+  draw(ctx) {
+    ctx.strokeStyle = "white";
+    ctx.beginPath();
+    ctx.arc(this.centerX, this.centerY, this.width / 2, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.fillStyle = "white";
+    changeFontSize(ctx, 30);
+    ctx.fillText(
+      "i",
+      this.centerX - this.width * 0.1,
+      this.centerY + this.height * 0.2
+    );
+  }
+}
+
+class TopTenBadge {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
+    this.centerX = this.x + this.width * 0.5;
+    this.centerY = this.y + this.height * 0.5;
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = "firebrick";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+
+    ctx.fillStyle = "white";
+    ctx.font = "bold 15px sans-serif";
+    ctx.fillText("TOP", this.centerX - this.width * 0.35, this.centerY);
+    ctx.fillText(
+      "10",
+      this.centerX - this.width * 0.2,
+      this.centerY + this.height * 0.3
+    );
+  }
+}
+
 class SearchPage {}
 
 class CommingSoonPage {}
@@ -543,9 +727,16 @@ class HomePage {
 
     this.bottomNavigation = new BottomNavigation(
       0,
-      this.stageHeight - 70,
+      this.stageHeight * 0.9,
       this.stageWidth,
-      70
+      this.stageHeight * 0.1
+    );
+
+    this.movieContainer = new NetflixMovieContainer(
+      0,
+      this.stageHeight * 0.725,
+      this.stageWidth,
+      this.stageHeight * 0.2
     );
   }
 
@@ -559,8 +750,94 @@ class HomePage {
     homeSplash.onload = () => {
       ctx.drawImage(homeSplash, 0, 0, this.stageWidth, this.stageHeight * 0.7);
       this.header.draw(ctx);
-      this.bottomNavigation.draw(ctx);
+
+      const gradient = ctx.createLinearGradient(
+        0,
+        this.stageHeight * 0.55,
+        0,
+        this.stageHeight * 0.35
+      );
+      gradient.addColorStop(0, "rgba(0, 0, 0, 1)");
+      gradient.addColorStop(1, "rgba(0, 0, 0, 0.5)");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(
+        0,
+        this.stageHeight * 0.35,
+        this.stageWidth,
+        this.stageHeight * 0.2
+      );
+      ctx.fillStyle = "black";
+      ctx.fillRect(
+        0,
+        this.stageHeight * 0.45,
+        this.stageWidth,
+        this.stageHeight * 0.25
+      );
+
+      ctx.fillStyle = "white";
+      ctx.font = "100px Grenze Gotisch";
+      ctx.fillText("VINCENZO", this.stageWidth * 0.1, this.stageHeight * 0.5);
+
+      const toptenBadge = new TopTenBadge(
+        this.stageWidth * 0.2,
+        this.stageHeight * 0.52,
+        40,
+        40
+      );
+
+      toptenBadge.draw(ctx);
+
+      changeFontSize(ctx, 20);
+      ctx.fillText(
+        "#1 in South Korea Today",
+        this.stageWidth * 0.3,
+        this.stageHeight * 0.55
+      );
+
+      const plusButton = new PlusButton(
+        this.stageWidth * 0.2,
+        this.stageHeight * 0.6,
+        25,
+        25
+      );
+      plusButton.draw(ctx);
+      changeFontSize(ctx, 15);
+      ctx.fillText(
+        "My List",
+        plusButton.x - 10,
+        plusButton.y + plusButton.height + 20
+      );
+
+      const playButton = new PlayButton(
+        this.stageWidth * 0.4,
+        this.stageHeight * 0.6,
+        120,
+        40
+      );
+
+      playButton.draw(ctx);
+
+      const infoButton = new InfoButton(
+        this.stageWidth * 0.75,
+        this.stageHeight * 0.6 - 5,
+        40,
+        40
+      );
+
+      infoButton.draw(ctx);
+      changeFontSize(ctx, 15);
+      ctx.fillText(
+        "Info",
+        infoButton.x + 7,
+        infoButton.y + infoButton.height + 20
+      );
     };
+    ctx.lineWidth = 3;
+    this.bottomNavigation.draw(ctx);
+    changeFontSize(ctx, 20);
+    ctx.fillStyle = "white";
+    ctx.fillText("Anime", 10, this.stageHeight * 0.72);
+    this.movieContainer.draw(ctx);
   }
 }
 
