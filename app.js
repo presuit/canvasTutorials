@@ -85,9 +85,8 @@ class NetflixCastButton {
     this.y = y;
     this.width = width;
     this.height = height;
-    this.wifiWidth = this.width / 2;
-    this.wifiHeight = this.height / 2;
-    this.wifiGap = this.wifiWidth / 5;
+    this.wifiWidth = this.width / 1.5;
+    this.wifiGap = this.wifiWidth / 4;
   }
 
   draw(ctx) {
@@ -172,6 +171,7 @@ class NetflixProfileIcon {
     ctx.fill();
     ctx.closePath();
 
+    ctx.strokeStyle = "white";
     ctx.beginPath();
     ctx.moveTo(this.smile[0].x, this.smile[0].y);
     ctx.bezierCurveTo(
@@ -379,7 +379,12 @@ class BottomNavigation {
     this.width = width;
     this.height = height;
 
-    this.homeButton = new HomeButton(this.x + 30, this.y + 30, 30, 30);
+    this.homeButton = new HomeButton(
+      this.x + this.width * 0.1,
+      this.y + this.height * 0.3,
+      30,
+      30
+    );
     this.commingSoonButton = new CommingSoonButton(
       this.homeButton.x + this.homeButton.width + 100,
       this.homeButton.y + 10,
@@ -388,7 +393,7 @@ class BottomNavigation {
     );
     this.searchButton = new SearchButton(
       this.commingSoonButton.x + this.commingSoonButton.width + 100,
-      this.homeButton.y,
+      this.homeButton.y + this.height * 0.05,
       30,
       30
     );
@@ -654,11 +659,12 @@ class PlayButton {
 }
 
 class InfoButton {
-  constructor(x, y, width, height) {
+  constructor(x, y, width, height, fontSize) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
+    this.fontSize = fontSize;
 
     this.centerX = this.x + this.width * 0.5;
     this.centerY = this.y + this.height * 0.5;
@@ -672,7 +678,7 @@ class InfoButton {
     ctx.closePath();
 
     ctx.fillStyle = "white";
-    changeFontSize(ctx, 30);
+    changeFontSize(ctx, this.fontSize);
     ctx.fillText(
       "i",
       this.centerX - this.width * 0.1,
@@ -707,9 +713,335 @@ class TopTenBadge {
   }
 }
 
+class BellIcon {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
+    this.centerX = this.x + this.width * 0.5;
+    this.centerY = this.y + this.height * 0.5;
+
+    this.bellCurve = [
+      { x: this.x + this.width * 0.1, y: this.y + this.height * 0.8 },
+      { x: this.x + this.width * 0.1, y: this.y },
+      { x: this.x + this.width * 0.9, y: this.y },
+      { x: this.x + this.width * 0.9, y: this.y + this.height * 0.8 },
+    ];
+  }
+  draw(ctx) {
+    ctx.fillStyle = "black";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.strokeStyle = "white";
+    ctx.beginPath();
+    ctx.moveTo(this.x, this.y + this.height * 0.8);
+    ctx.lineTo(this.x + this.width, this.y + this.height * 0.8);
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.arc(
+      this.centerX,
+      this.y + this.height * 0.8,
+      this.width * 0.15,
+      0,
+      Math.PI
+    );
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(this.bellCurve[0].x, this.bellCurve[0].y);
+    ctx.bezierCurveTo(
+      this.bellCurve[1].x,
+      this.bellCurve[1].y,
+      this.bellCurve[2].x,
+      this.bellCurve[2].y,
+      this.bellCurve[3].x,
+      this.bellCurve[3].y
+    );
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.moveTo(this.centerX, this.y);
+    ctx.lineTo(this.centerX, this.y + this.height * 0.2);
+    ctx.stroke();
+    ctx.closePath();
+  }
+}
+
+class CommingSoonMovie {
+  constructor(
+    x,
+    y,
+    width,
+    height,
+    commingDate,
+    description,
+    genres,
+    imgSrc,
+    titleSrc
+  ) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.commingDate = commingDate;
+    this.description = description;
+    this.genres = genres;
+    this.imgSrc = imgSrc;
+    this.titleSrc = titleSrc;
+
+    this.centerX = this.x + this.width * 0.5;
+    this.centerY = this.y + this.height * 0.5;
+
+    this.bellIcon = new BellIcon(
+      this.centerX + this.width * 0.2,
+      this.centerY + this.height * 0.05,
+      this.width * 0.06,
+      this.height * 0.07
+    );
+
+    this.infoIcon = new InfoButton(
+      this.bellIcon.x + this.width * 0.15,
+      this.bellIcon.y,
+      this.width * 0.05,
+      this.height * 0.06,
+      12
+    );
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = "black";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+
+    const movieImg = new Image();
+    movieImg.src = this.imgSrc;
+
+    movieImg.onload = () => {
+      ctx.drawImage(movieImg, this.x, this.y, this.width, this.height * 0.5);
+
+      const movieTitle = new Image();
+      movieTitle.src = this.titleSrc;
+      movieTitle.onload = () => {
+        ctx.drawImage(
+          movieTitle,
+          this.x,
+          this.y + this.height * 0.5,
+          this.width * 0.3,
+          this.height * 0.2
+        );
+      };
+    };
+
+    this.bellIcon.draw(ctx);
+    ctx.fillStyle = "white";
+    changeFontSize(ctx, 12);
+    ctx.fillText(
+      "Remind Me",
+      this.bellIcon.x - 15,
+      this.bellIcon.y + this.bellIcon.height + 15
+    );
+
+    this.infoIcon.draw(ctx);
+    ctx.fillText(
+      "Info",
+      this.infoIcon.x,
+      this.infoIcon.y + this.infoIcon.height + 20
+    );
+
+    ctx.fillText(
+      `Seasons Comming ${this.commingDate}`,
+      this.x + 10,
+      this.centerY + this.height * 0.24
+    );
+
+    for (let i = 0; i < this.description.length; i++) {
+      ctx.fillText(
+        this.description[i],
+        this.x + 10,
+        this.centerY + this.height * 0.3 + i * 15
+      );
+    }
+
+    let futherToGo = this.x + 10;
+    let text;
+    for (let i = 0; i < this.genres.length; i++) {
+      text = ctx.measureText(this.genres[i]);
+      ctx.fillText(
+        this.genres[i],
+        i > 0 ? futherToGo : this.x + 10,
+        this.centerY + this.height * 0.3 + this.description.length * 15 + 20
+      );
+      futherToGo += text.width + 20;
+
+      if (i < this.genres.length - 1) {
+        ctx.fillStyle = "firebrick";
+        ctx.beginPath();
+        ctx.arc(
+          futherToGo - 10,
+          this.centerY + this.height * 0.3 + this.description.length * 15 + 15,
+          3,
+          0,
+          Math.PI * 2
+        );
+        ctx.fill();
+        ctx.closePath();
+        ctx.fillStyle = "white";
+      }
+    }
+
+    return Promise.resolve(true);
+  }
+}
+
+class NetflixCommingSoonHeader {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
+    this.centerX = this.x + this.width * 0.5;
+    this.centerY = this.y + this.height * 0.5;
+
+    this.castButton = new NetflixCastButton(
+      this.centerX + this.width * 0.2,
+      this.centerY - this.height * 0.15,
+      this.width * 0.05,
+      this.height * 0.2
+    );
+
+    this.profileButton = new NetflixProfileIcon(
+      this.castButton.x + this.width * 0.12,
+      this.centerY - this.height * 0.15,
+      this.width * 0.05,
+      this.height * 0.2
+    );
+
+    this.bellIcon = new BellIcon(
+      this.x + this.width * 0.1,
+      this.centerY + this.height * 0.25,
+      this.width * 0.04,
+      this.height * 0.2
+    );
+
+    this.arrow = [
+      { x: this.x + this.width * 0.9, y: this.bellIcon.y },
+      {
+        x: this.x + this.width * 0.93,
+        y: this.bellIcon.y + this.bellIcon.height * 0.5,
+      },
+      {
+        x: this.x + this.width * 0.9,
+        y: this.bellIcon.y + this.bellIcon.height * 0.5 * 2,
+      },
+    ];
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = "black";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+
+    ctx.fillStyle = "white";
+    ctx.font = "bold 25px sans-serif";
+    ctx.fillText("Comming Soon", this.x + this.width * 0.05, this.centerY);
+    this.profileButton.draw(ctx);
+    this.castButton.draw(ctx);
+
+    this.bellIcon.draw(ctx);
+    ctx.fillStyle = "white";
+    changeFontSize(ctx, 20);
+    ctx.fillText(
+      "Notifications",
+      this.bellIcon.x + this.bellIcon.width + this.width * 0.1,
+      this.bellIcon.y + this.bellIcon.height - this.height * 0.03
+    );
+
+    ctx.beginPath();
+    ctx.moveTo(this.arrow[0].x, this.arrow[0].y);
+    for (const item of this.arrow) {
+      ctx.lineTo(item.x, item.y);
+    }
+    ctx.stroke();
+    ctx.closePath();
+  }
+}
+
 class SearchPage {}
 
-class CommingSoonPage {}
+class CommingSoonPage {
+  constructor() {}
+
+  resize(stageWidth, stageHeight) {
+    this.stageWidth = stageWidth;
+    this.stageHeight = stageHeight;
+
+    this.header = new NetflixCommingSoonHeader(
+      0,
+      0,
+      this.stageWidth,
+      this.stageHeight * 0.15
+    );
+
+    this.bottomNavigation = new BottomNavigation(
+      0,
+      this.stageHeight * 0.9,
+      this.stageWidth,
+      this.stageHeight * 0.1
+    );
+
+    this.movies = [];
+    this.movies.push(
+      new CommingSoonMovie(
+        0,
+        this.header.y + this.header.height + 5,
+        this.stageWidth,
+        this.stageHeight * 0.5,
+        "March 31",
+        [
+          `Joseph Joestar's grandson Jotaro Kujo has a strange new superpower,`,
+          `which turns out to be connected to the reemergence of old foe Dio Brando`,
+        ],
+        ["Exciting", "Fanstasy Anime", "Action Anime", "Ensemble", "Vampires"],
+        "./assets/comming_soon_movie_1.PNG",
+        "./assets/comming_soon_movie_1_title.PNG"
+      )
+    );
+    console.log(this.movies[0]);
+    this.movies.push(
+      new CommingSoonMovie(
+        0,
+        this.movies[0].y + this.movies[0].height + this.stageHeight * 0.01,
+        this.stageWidth,
+        this.stageHeight * 0.5,
+        "March 31",
+        [
+          `Joseph Joestar's grandson Jotaro Kujo has a strange new superpower,`,
+          `which turns out to be connected to the reemergence of old foe Dio Brando`,
+        ],
+        ["Exciting", "Fanstasy Anime", "Action Anime", "Ensemble", "Vampires"],
+        "./assets/comming_soon_movie_1.PNG",
+        "./assets/comming_soon_movie_1_title.PNG"
+      )
+    );
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, this.stageWidth, this.stageHeight);
+
+    this.header.draw(ctx);
+
+    for (const item of this.movies) {
+      item.draw(ctx);
+    }
+
+    setTimeout(() => {
+      this.bottomNavigation.draw(ctx);
+    }, 500);
+  }
+}
 
 class HomePage {
   constructor() {}
@@ -821,7 +1153,8 @@ class HomePage {
         this.stageWidth * 0.75,
         this.stageHeight * 0.6 - 5,
         40,
-        40
+        40,
+        30
       );
 
       infoButton.draw(ctx);
@@ -851,7 +1184,7 @@ class App {
     this.currentPage = 0;
 
     this.pages = [];
-    this.pages.push(new HomePage());
+    this.pages.push(new CommingSoonPage());
 
     window.addEventListener("resize", this.resize.bind(this));
     this.resize();
