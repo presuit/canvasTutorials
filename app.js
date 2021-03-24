@@ -296,25 +296,27 @@ class CommingSoonButton {
 }
 
 class SearchButton {
-  constructor(x, y, width, height) {
+  constructor(x, y, width, height, fillStyle, strokeStyle) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
+    this.fillStyle = fillStyle;
+    this.strokeStyle = strokeStyle;
 
     this.centerX = this.x + this.width * 0.5;
     this.centerY = this.y + this.height * 0.5;
   }
 
   draw(ctx) {
-    ctx.strokeStyle = "white";
+    ctx.strokeStyle = this.strokeStyle || "white";
     ctx.beginPath();
     ctx.moveTo(this.x + this.width, this.y + this.height);
     ctx.lineTo(this.centerX, this.centerY);
     ctx.stroke();
     ctx.closePath();
 
-    ctx.fillStyle = "black";
+    ctx.fillStyle = this.fillStyle || "black";
     ctx.beginPath();
     ctx.arc(this.centerX, this.centerY, this.width * 0.4, 0, Math.PI * 2);
     ctx.fill();
@@ -497,6 +499,10 @@ class NetflixHeader {
     this.height = height;
     this.elementBaseWidth = this.width / 15;
     this.elementBaseHeight = this.height / 3;
+
+    this.centerX = this.x + this.width * 0.5;
+    this.centerY = this.y + this.height * 0.5;
+
     this.logo = new NetflixLogo(
       this.x + 20,
       this.y + 20,
@@ -504,19 +510,18 @@ class NetflixHeader {
       this.elementBaseHeight - 5
     );
 
-    this.profileButton = new NetflixProfileIcon(
-      this.x + this.width - 50,
-      this.logo.y + this.logo.height / 3,
-
-      this.elementBaseWidth,
-      this.elementBaseHeight * 0.57
+    this.castButton = new NetflixCastButton(
+      this.centerX + this.width * 0.3,
+      this.centerY - this.height * 0.25,
+      this.width * 0.06,
+      this.height * 0.2
     );
 
-    this.castButton = new NetflixCastButton(
-      this.profileButton.x - this.elementBaseWidth - 30,
-      this.profileButton.y,
-      this.elementBaseWidth,
-      this.elementBaseHeight / 2
+    this.profileButton = new NetflixProfileIcon(
+      this.centerX + this.width * 0.4,
+      this.centerY - this.height * 0.25,
+      this.width * 0.05,
+      this.height * 0.2
     );
 
     this.tvShows = {
@@ -678,12 +683,13 @@ class InfoButton {
     ctx.closePath();
 
     ctx.fillStyle = "white";
-    changeFontSize(ctx, this.fontSize);
+    ctx.font = `bold ${this.fontSize}px sans-serif`;
     ctx.fillText(
       "i",
       this.centerX - this.width * 0.1,
       this.centerY + this.height * 0.2
     );
+    changeFontSize(ctx, 12);
   }
 }
 
@@ -840,7 +846,7 @@ class CommingSoonMovie {
     ctx.fillText(
       "Remind Me",
       this.bellIcon.x - 15,
-      this.bellIcon.y + this.bellIcon.height + 15
+      this.bellIcon.y + this.bellIcon.height + 16
     );
 
     this.infoIcon.draw(ctx);
@@ -968,7 +974,210 @@ class NetflixCommingSoonHeader {
   }
 }
 
-class SearchPage {}
+class SearchBar {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
+    this.centerX = this.x + this.width * 0.5;
+    this.centerY = this.y + this.height * 0.5;
+
+    this.searchIcon = new SearchButton(
+      this.centerX - 50,
+      this.y + 5,
+      25,
+      25,
+      "#27272A",
+      "#71717A"
+    );
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = "#27272A";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.lineWidth = 3;
+    this.searchIcon.draw(ctx);
+
+    ctx.fillStyle = "#71717A";
+    ctx.font = "bold 18px sans-serif";
+    ctx.fillText(
+      "Search",
+      this.searchIcon.x + this.searchIcon.width + 15,
+      this.searchIcon.y + this.searchIcon.height - 5
+    );
+  }
+}
+
+class PlayIcon {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+
+    console.log(this.x, this.y, this.width, this.height);
+
+    this.centerX = this.x + this.width * 0.5;
+    this.centerY = this.y + this.height * 0.5;
+
+    this.triangles = [];
+    this.triangles.push({
+      x: this.centerX - this.width * 0.15,
+      y: this.y + this.height * 0.2,
+    });
+    this.triangles.push({
+      x: this.x + this.width * 0.8,
+      y: this.centerY,
+    });
+    this.triangles.push({
+      x: this.centerX - this.width * 0.15,
+      y: this.y + this.height * 0.8,
+    });
+
+    console.log(this.triangles);
+  }
+
+  draw(ctx) {
+    ctx.strokeStyle = "white";
+    ctx.beginPath();
+    ctx.arc(this.centerX, this.centerY, this.width * 0.5, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.moveTo(this.triangles[0].x, this.triangles[0].y);
+    for (const item of this.triangles) {
+      ctx.lineTo(item.x, item.y);
+    }
+    ctx.lineTo(this.triangles[0].x, this.triangles[0].y);
+    ctx.fill();
+    ctx.closePath();
+  }
+}
+
+class SearchMovie {
+  constructor(x, y, width, height, imgSrc, title) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.imgSrc = imgSrc;
+    this.title = title;
+
+    this.centerX = this.x + this.width * 0.5;
+    this.centerY = this.y + this.height * 0.5;
+
+    this.playIconWidth = 40;
+
+    this.playIcon = new PlayIcon(
+      this.x + this.width * 0.85,
+      this.centerY - this.playIconWidth / 2,
+      this.playIconWidth,
+      this.playIconWidth
+    );
+  }
+
+  draw(ctx) {
+    const img = new Image();
+    img.src = this.imgSrc;
+
+    img.onload = () => {
+      ctx.drawImage(img, this.x, this.y, this.width * 0.3, this.height);
+      ctx.fillStyle = "white";
+      ctx.font = "bold 15px sans-serif";
+      ctx.fillText(
+        this.title,
+        this.x + this.width * 0.32,
+        this.y + this.height * 0.5
+      );
+      this.playIcon.draw(ctx);
+    };
+  }
+}
+
+class SearchPage {
+  constructor() {}
+
+  resize(stageWidth, stageHeight) {
+    this.stageWidth = stageWidth;
+    this.stageHeight = stageHeight;
+    this.totalMovies = 5;
+    this.movieTitles = [
+      "Fomula 1:Drive to Survive",
+      "League of Legends Origins",
+      "Lupin",
+      "Sherlock",
+      "The Queen's Gambit",
+    ];
+
+    this.searchBar = new SearchBar(
+      10,
+      10,
+      this.stageWidth - 20,
+      this.stageHeight * 0.05
+    );
+
+    this.bottomNavigation = new BottomNavigation(
+      0,
+      this.stageHeight * 0.9,
+      this.stageWidth,
+      this.stageHeight * 0.1
+    );
+
+    this.movies = [];
+
+    for (let i = 0; i < this.totalMovies; i++) {
+      if (i === 0) {
+        this.movies.push(
+          new SearchMovie(
+            this.searchBar.x,
+            this.searchBar.y + this.searchBar.height + 20,
+            this.stageWidth * 0.95,
+            this.stageHeight * 0.15,
+            `./assets/search_movie_${i + 1}.PNG`,
+            this.movieTitles[i]
+          )
+        );
+        continue;
+      }
+
+      this.movies.push(
+        new SearchMovie(
+          this.movies[i - 1].x,
+          this.movies[i - 1].y + this.movies[i - 1].height + 20,
+          this.stageWidth * 0.95,
+          this.stageHeight * 0.15,
+          `./assets/search_movie_${i + 1}.PNG`,
+          this.movieTitles[i]
+        )
+      );
+    }
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, this.stageWidth, this.stageHeight);
+
+    this.searchBar.draw(ctx);
+
+    ctx.fillStyle = "white";
+    ctx.font = "bold 20px sans-serif";
+    ctx.fillText(
+      "Top Searches",
+      this.searchBar.x,
+      this.searchBar.y + this.searchBar.height + 50
+    );
+
+    for (const item of this.movies) {
+      item.draw(ctx);
+    }
+
+    setTimeout(() => this.bottomNavigation.draw(ctx), 500);
+  }
+}
 
 class CommingSoonPage {
   constructor() {}
@@ -1181,10 +1390,12 @@ class App {
 
     document.body.appendChild(this.canvas);
 
-    this.currentPage = 0;
+    this.currentPage = 2;
 
     this.pages = [];
+    this.pages.push(new HomePage());
     this.pages.push(new CommingSoonPage());
+    this.pages.push(new SearchPage());
 
     window.addEventListener("resize", this.resize.bind(this));
     this.resize();
