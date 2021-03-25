@@ -1175,7 +1175,7 @@ class SearchPage {
       item.draw(ctx);
     }
 
-    setTimeout(() => this.bottomNavigation.draw(ctx), 500);
+    setTimeout(() => this.bottomNavigation.draw(ctx), 50);
   }
 }
 
@@ -1248,7 +1248,7 @@ class CommingSoonPage {
 
     setTimeout(() => {
       this.bottomNavigation.draw(ctx);
-    }, 500);
+    }, 50);
   }
 }
 
@@ -1390,7 +1390,7 @@ class App {
 
     document.body.appendChild(this.canvas);
 
-    this.currentPage = 2;
+    this.currentPage = 0;
 
     this.pages = [];
     this.pages.push(new HomePage());
@@ -1399,6 +1399,37 @@ class App {
 
     window.addEventListener("resize", this.resize.bind(this));
     this.resize();
+    this.canvas.addEventListener("click", this.handleClick.bind(this));
+  }
+
+  handleClick(e) {
+    const { clientX: x, clientY: y } = e;
+    console.log(x, y, this.canvas.offsetLeft, this.stageHeight);
+
+    for (const iconName in this.bottomNavigationOffset) {
+      const currentIconName = this.bottomNavigationOffset[iconName];
+      const offset1 = currentIconName[0];
+      const offset2 = currentIconName[1];
+
+      if (
+        x >= offset1.x &&
+        x <= offset2.x &&
+        y >= offset1.y &&
+        y <= offset2.y
+      ) {
+        if (iconName === "home") {
+          // go to home page
+          this.currentPage = 0;
+        } else if (iconName === "commingSoon") {
+          //
+          this.currentPage = 1;
+        } else if (iconName === "search") {
+          this.currentPage = 2;
+        }
+
+        this.resize();
+      }
+    }
   }
 
   resize() {
@@ -1411,6 +1442,21 @@ class App {
     this.ctx.scale(1, 1);
 
     this.pages[this.currentPage].resize(this.stageWidth, this.stageHeight);
+
+    this.bottomNavigationOffset = {
+      home: [
+        { x: this.canvas.offsetLeft + 44, y: this.stageHeight - 60 },
+        { x: this.canvas.offsetLeft + 81, y: this.stageHeight },
+      ],
+      commingSoon: [
+        { x: this.canvas.offsetLeft + 150, y: this.stageHeight - 60 },
+        { x: this.canvas.offsetLeft + 234, y: this.stageHeight },
+      ],
+      search: [
+        { x: this.canvas.offsetLeft + 301, y: this.stageHeight - 60 },
+        { x: this.canvas.offsetLeft + 341, y: this.stageHeight },
+      ],
+    };
 
     this.draw();
   }
