@@ -8,6 +8,10 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@600&display=swap"
+      rel="stylesheet"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
@@ -30,7 +34,7 @@
         background-color: #6366f1;
         font-family: "Noto Sans KR", sans-serif;
       }
-      div {
+      main {
         align-self: flex-start;
         font-weight: 500;
         color: #fcd34d;
@@ -40,27 +44,48 @@
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         border-radius: 10px;
+        margin-bottom: 20px;
       }
-      div:hover {
+      main:hover {
         box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
           0 10px 10px rgba(0, 0, 0, 0.22);
+      }
+      div:first-child {
+        border-bottom: 4px solid #312e81;
+      }
+      div {
+        margin-bottom: 20px;
       }
       canvas {
         width: 500px;
         height: 100%;
         background-color: white;
+        font-family: "Grenze Gotisch", cursive;
       }
     </style>
   </head>
   <body>
-    <div>
-      <h1>사용방법</h1>
-      <h2>
-        화면간 이동은 밑에 있는<br />
-        아이콘들을 클릭하시면<br />
-        이동하실 수 있습니다.
-      </h2>
-    </div>
+    <main>
+      <div>
+        <h1>사용방법</h1>
+        <h2>
+          화면간 이동은 밑에 있는<br />
+          아이콘들을 클릭하시면<br />
+          이동하실 수 있습니다.
+        </h2>
+      </div>
+      <div>
+        <h1>주의 사항</h1>
+        <h2>
+          외부 폰트 로드중 초기 화면에 제대로 로드 되지 않는 문제가 있습니다.<br />
+          페이지를 초기에 열고 홈페이지의 "VINCENZO"의 폰트가 캔버스를
+          넘어갔다면,<br />
+          캔버스의 홈버튼을 한번 클릭하면 완벽하게 외부폰트까지 적용 된 과제물을
+          보실 수 있습니다.
+        </h2>
+      </div>
+    </main>
+
     <script src="./app.js"></script>
   </body>
 </html>

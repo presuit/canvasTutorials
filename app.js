@@ -1017,8 +1017,6 @@ class PlayIcon {
     this.width = width;
     this.height = height;
 
-    console.log(this.x, this.y, this.width, this.height);
-
     this.centerX = this.x + this.width * 0.5;
     this.centerY = this.y + this.height * 0.5;
 
@@ -1035,8 +1033,6 @@ class PlayIcon {
       x: this.centerX - this.width * 0.15,
       y: this.y + this.height * 0.8,
     });
-
-    console.log(this.triangles);
   }
 
   draw(ctx) {
@@ -1217,7 +1213,6 @@ class CommingSoonPage {
         "./assets/comming_soon_movie_1_title.PNG"
       )
     );
-    console.log(this.movies[0]);
     this.movies.push(
       new CommingSoonMovie(
         0,
@@ -1230,7 +1225,7 @@ class CommingSoonPage {
           `which turns out to be connected to the reemergence of old foe Dio Brando`,
         ],
         ["Exciting", "Fanstasy Anime", "Action Anime", "Ensemble", "Vampires"],
-        "./assets/comming_soon_movie_1.PNG",
+        "./assets/comming_soon_movie_2.PNG",
         "./assets/comming_soon_movie_1_title.PNG"
       )
     );
@@ -1325,7 +1320,6 @@ class HomePage {
         40,
         40
       );
-
       toptenBadge.draw(ctx);
 
       changeFontSize(ctx, 20);
@@ -1404,7 +1398,6 @@ class App {
 
   handleClick(e) {
     const { clientX: x, clientY: y } = e;
-    console.log(x, y, this.canvas.offsetLeft, this.stageHeight);
 
     for (const iconName in this.bottomNavigationOffset) {
       const currentIconName = this.bottomNavigationOffset[iconName];
